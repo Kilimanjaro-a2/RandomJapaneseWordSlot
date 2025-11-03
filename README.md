@@ -40,10 +40,12 @@ npm start
 
 ## ゲームの設定
 
-目標単語は `app/SlotGame.tsx` の `TARGET_WORD` 定数で変更できます。
+目標単語は `public/config.json` ファイルで変更できます。
 
-```typescript
-const TARGET_WORD = 'ありがとう'.slice(0, 3); // "ありが"
+```json
+{
+  "targetWord": "ありが"
+}
 ```
 
-任意の3文字のひらがな単語に変更可能です。
+任意の3文字のひらがな単語に変更可能です。ファイルを編集後、アプリケーションをリロードすると新しい目標単語が反映されます。
