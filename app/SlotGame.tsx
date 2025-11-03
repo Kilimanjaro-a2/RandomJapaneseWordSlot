@@ -28,9 +28,16 @@ export default function SlotGame() {
   useEffect(() => {
     // Load target word from configuration file
     fetch('/config.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to load config: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
-        if (data.targetWord && data.targetWord.length === 3) {
+        if (data.targetWord && 
+            data.targetWord.length === 3 &&
+            /^[\u3040-\u309F]{3}$/.test(data.targetWord)) {
           setTargetWord(data.targetWord);
         }
       })
