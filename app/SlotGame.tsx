@@ -18,8 +18,10 @@ const HIRAGANA_CHARS = [
 // Target word - can be changed to any 3-character hiragana word
 const TARGET_WORD = 'ありがとう'.slice(0, 3); // "ありが" - first 3 chars of "ありがとう"
 
+const INITIAL_REELS = ['あ', 'あ', 'あ'];
+
 export default function SlotGame() {
-  const [reels, setReels] = useState<string[]>(['あ', 'あ', 'あ']);
+  const [reels, setReels] = useState<string[]>(INITIAL_REELS);
   const [spinning, setSpinning] = useState<boolean[]>([false, false, false]);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCleared, setGameCleared] = useState(false);
