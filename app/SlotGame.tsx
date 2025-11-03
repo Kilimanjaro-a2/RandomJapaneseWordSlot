@@ -16,13 +16,15 @@ const HIRAGANA_CHARS = [
 ];
 
 const INITIAL_REELS = ['あ', 'あ', 'あ'];
+const DEFAULT_TARGET_WORD = 'ありが';
+const HIRAGANA_PATTERN = /^[\u3040-\u309F]{3}$/;
 
 export default function SlotGame() {
   const [reels, setReels] = useState<string[]>(INITIAL_REELS);
   const [spinning, setSpinning] = useState<boolean[]>([false, false, false]);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCleared, setGameCleared] = useState(false);
-  const [targetWord, setTargetWord] = useState<string>('ありが');
+  const [targetWord, setTargetWord] = useState<string>(DEFAULT_TARGET_WORD);
   const intervalRefs = useRef<(NodeJS.Timeout | null)[]>([null, null, null]);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function SlotGame() {
       .then(data => {
         if (data.targetWord && 
             data.targetWord.length === 3 &&
-            /^[\u3040-\u309F]{3}$/.test(data.targetWord)) {
+            HIRAGANA_PATTERN.test(data.targetWord)) {
           setTargetWord(data.targetWord);
         }
       })
