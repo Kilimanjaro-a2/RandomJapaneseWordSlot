@@ -15,9 +15,6 @@ const HIRAGANA_CHARS = [
   'わ', 'を', 'ん'
 ];
 
-// Target word - can be changed to any 3-character hiragana word
-const TARGET_WORD = 'ありがとう'.slice(0, 3); // "ありが" - first 3 chars of "ありがとう"
-
 const INITIAL_REELS = ['あ', 'あ', 'あ'];
 
 export default function SlotGame() {
@@ -25,7 +22,23 @@ export default function SlotGame() {
   const [spinning, setSpinning] = useState<boolean[]>([false, false, false]);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCleared, setGameCleared] = useState(false);
+  const [targetWord, setTargetWord] = useState<string>('ありが');
   const intervalRefs = useRef<(NodeJS.Timeout | null)[]>([null, null, null]);
+
+  useEffect(() => {
+    // Load target word from configuration file
+    fetch('/config.json')
+      .then(response => response.json())
+      .then(data => {
+        if (data.targetWord && data.targetWord.length === 3) {
+          setTargetWord(data.targetWord);
+        }
+      })
+      .catch(error => {
+        console.error('Failed to load configuration:', error);
+        // Keep default value if config fails to load
+      });
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -38,12 +51,12 @@ export default function SlotGame() {
 
   useEffect(() => {
     // Check if game is cleared
-    if (reels.join('') === TARGET_WORD && !spinning.some(s => s)) {
+    if (reels.join('') === targetWord && !spinning.some(s => s)) {
       if (gameStarted) {
         setGameCleared(true);
       }
     }
-  }, [reels, spinning, gameStarted]);
+  }, [reels, spinning, gameStarted, targetWord]);
 
   const startGame = () => {
     setGameStarted(true);
@@ -89,7 +102,7 @@ export default function SlotGame() {
           日本語スロットゲーム
         </h1>
         <p className="text-center text-gray-600 mb-8">
-          目標: <span className="font-bold text-2xl text-purple-700">{TARGET_WORD}</span>
+          目標: <span className="font-bold text-2xl text-purple-700">{targetWord}</span>
         </p>
 
         {/* Reels */}
@@ -159,7 +172,7 @@ export default function SlotGame() {
           <ul className="text-sm text-blue-700 space-y-1">
             <li>1. 「スタート」ボタンを押してゲームを開始</li>
             <li>2. 各リールの「ストップ」ボタンで止める</li>
-            <li>3. 目標の言葉「{TARGET_WORD}」を揃えるとクリア！</li>
+            <li>3. 目標の言葉「{targetWord}」を揃えるとクリア！</li>
           </ul>
         </div>
       </div>
